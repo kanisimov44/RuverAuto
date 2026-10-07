@@ -1,12 +1,9 @@
 from enum import Enum as PyEnum
-from typing import Annotated
 
 from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.database import Base
-
-intpk = Annotated[int, mapped_column(primary_key=True)]
+from app.database import Base, intpk
 
 
 class Roles(PyEnum):
@@ -15,11 +12,15 @@ class Roles(PyEnum):
     USER = "user"
 
 
+# Роли, которым разрешён вход в админку
+ADMIN_ROLES = (Roles.ROOT, Roles.ADMIN)
+
+
 class Users(Base):
     __tablename__ = "users"
 
     id: Mapped[intpk]
-    username: Mapped[str]
+    username: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
     is_active: Mapped[bool] = mapped_column(default=True)
     is_superuser: Mapped[bool] = mapped_column(default=False)
