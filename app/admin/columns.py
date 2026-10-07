@@ -6,31 +6,17 @@ column_labels_for_products = {
     "price": "Цена",
     "label": "Лейбл наличия",
     "is_active": "Публикация",
-    "characteristics": "Характеристики"
+    "characteristics": "Характеристики",
 }
 
 form_columns_for_products = {
-    "name": {
-        "label": "Название"
-    },
-    "description": {
-        "label": "Описание"
-    },
-    "price": {
-        "label": "Цена"
-    },
-    "label": {
-        "label": "Лейбл наличия"
-    },
-    "characteristics": {
-        "label": "Характеристики"
-    },
-    "images": {
-        "label": "Фото"
-    },
-    "is_active": {
-        "label": "Публикация"
-    }
+    "name": {"label": "Название"},
+    "description": {"label": "Описание"},
+    "price": {"label": "Цена"},
+    "label": {"label": "Лейбл наличия"},
+    "characteristics": {"label": "Характеристики"},
+    "images": {"label": "Фото"},
+    "is_active": {"label": "Публикация"},
 }
 
 column_labels_for_products_info = {
@@ -38,7 +24,7 @@ column_labels_for_products_info = {
     "product_id": "Ссылка на товар",
     "name_of_characteristic": "Название характеристики",
     "value_of_characteristic": "Значение характеристики",
-    "product": "Товар"
+    "product": "Товар",
 }
 
 column_labels_for_producst_images = {
@@ -49,19 +35,10 @@ column_labels_for_producst_images = {
 }
 
 form_columns_for_producst_images = {
-    "id": {
-        "label": "Идентификатор"
-    },
-    "product_id": {
-        "label": "Идентификатор товара"
-    },
-    "product": {
-        "label": "Товар"
-    },
-    "image_name": {
-        "label": "Название изображения",
-        "clearable": False
-    },
+    "id": {"label": "Идентификатор"},
+    "product_id": {"label": "Идентификатор товара"},
+    "product": {"label": "Товар"},
+    "image_name": {"label": "Название изображения", "clearable": False},
 }
 
 column_labels_for_price_list = {
@@ -71,12 +48,8 @@ column_labels_for_price_list = {
 }
 
 form_column_for_price_list = {
-    "file_name": {
-        "label": "Название файла"
-    },
-    "upload_data": {
-        "label": "Дата обновления"
-    },
+    "file_name": {"label": "Название файла"},
+    "upload_data": {"label": "Дата обновления"},
 }
 
 column_labels_for_main_content = {
@@ -97,49 +70,25 @@ column_labels_for_main_content = {
 }
 
 form_column_for_main_content = {
-    "logo": {
-        "label": "Логотип"
-    },
-    "phone": {
-        "label": "Телефон"
-    },
-    "email": {
-        "label": "Почта"
-    },
-    "header_title": {
-        "label": "Заголовок в шапке"
-    },
-    "header_desc": {
-        "label": "Описание в шапке"
-    },
-    "main_desc": {
-        "label": "Информационная строка"
-    },
-    "products_title": {
-        "label": "Заголовок раздела «Товары»"
-    },
-    "about_us_title": {
-        "label": "Заголовок раздела «О компании»"
-    },
-    "about_us_desc": {
-        "label": "Описание раздела «О компании»"
-    },
-    "news_title": {
-        "label": "Заголовок раздела «Новости»"
-    },
-    "address": {
-        "label": "Адрес"
-    },
-    "link_to_the_map": {
-        "label": "Ссылка на Яндекс.Карты"
-    },
+    "logo": {"label": "Логотип"},
+    "phone": {"label": "Телефон"},
+    "email": {"label": "Почта"},
+    "header_title": {"label": "Заголовок в шапке"},
+    "header_desc": {"label": "Описание в шапке"},
+    "main_desc": {"label": "Информационная строка"},
+    "products_title": {"label": "Заголовок раздела «Товары»"},
+    "about_us_title": {"label": "Заголовок раздела «О компании»"},
+    "about_us_desc": {"label": "Описание раздела «О компании»"},
+    "news_title": {"label": "Заголовок раздела «Новости»"},
+    "address": {"label": "Адрес"},
+    "link_to_the_map": {"label": "Ссылка на Яндекс.Карты"},
 }
 
 column_labels_for_about_us_images = {
     "id": "Идентификатор",
     "about_us_id": "Идентификатор записи",
     "image_name": "Название",
-    "about_us": "Запись"
+    "about_us": "Запись",
 }
 
 column_labels_for_users = {
@@ -151,18 +100,10 @@ column_labels_for_users = {
 }
 
 form_column_for_users = {
-    "username": {
-        "label": "Логин"
-    },
-    "hashed_password": {
-        "label": "Пароль"
-    },
-    "is_active": {
-        "label": "Активный"
-    },
-    "role": {
-        "label": "Роль"
-    },
+    "username": {"label": "Логин"},
+    "hashed_password": {"label": "Пароль"},
+    "is_active": {"label": "Активный"},
+    "role": {"label": "Роль"},
 }
 
 column_labels_for_news = {
@@ -175,28 +116,18 @@ column_labels_for_news = {
 }
 
 form_column_for_news = {
-    "title": {
-        "label": "Заголовок"
-    },
-    "description": {
-        "label": "Описание новости"
-    },
-    "date_of_the_news": {
-        "label": "Дата"
-    },
-    "images": {
-        "label": "Изображения"
-    },
-    "is_active": {
-        "label": "Публикация"
-    },
+    "title": {"label": "Заголовок"},
+    "description": {"label": "Описание новости"},
+    "date_of_the_news": {"label": "Дата"},
+    "images": {"label": "Изображения"},
+    "is_active": {"label": "Публикация"},
 }
 
 column_labels_for_news_images = {
     "id": "Идентификатор",
     "news_id": "Идентификатор новости",
     "news_image_name": "Название изображения",
-    "the_news": "Новость"
+    "the_news": "Новость",
 }
 
 column_labels_for_text_pages = {
