@@ -1,4 +1,4 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
 {% block main %}
 <!-- Заголовок под шапкой -->
@@ -23,9 +23,9 @@
         <!-- Изображение Новости -->
         <div class="news-item">
           {% if news.images %}
-            <img src="{{ url_for('static', path='images/' + news.images[0]|string)}}" alt="Фото новости" class="image">
+            <img src="{{ url_for('static', path='uploads/' + news.images[0])}}" alt="Фото новости" class="image">
           {% else %}
-            <img src="{{ url_for('static', path='images/coming_soon.webp')}}" alt="Фото новости" class="image">
+            <img src="{{ url_for('static', path='img/coming_soon.webp')}}" alt="Фото новости" class="image">
           {% endif %}
 
           <!-- Заголовок Новости -->
@@ -45,10 +45,10 @@
           <!-- Дата публикации Новости -->
           <div class="news-item-date-btn">
             {% if news.date_of_the_news %}
-              <p class="date">{{ news.date_of_the_news }}</p>
+              <p class="date">{{ news.date_of_the_news|ru_date }}</p>
             {% endif %}
-            <a href="/pages/news/{{ news.id }}" class="btn-more">
-              <img src="{{ url_for('static', path='images/btn.png') }}" alt="Подробнее" class="btn-more-img">
+            <a href="/news/{{ news.id }}" class="btn-more">
+              <img src="{{ url_for('static', path='img/btn.png') }}" alt="Подробнее" class="btn-more-img">
             </a>
           </div>
         </div>

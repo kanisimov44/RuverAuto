@@ -1,30 +1,17 @@
-from typing import Optional
-
 from fastapi import APIRouter
 
+from app.cache import cached
 from app.main_content.dao import MainContentDAO
 from app.main_content.schemas import SMainContent
-
-# from fastapi_cache.decorator import cache
-
 
 router = APIRouter(
     prefix="/main_content",
     tags=["Контент"],
-    responses={404: {"description": "Not found"}},
 )
 
 
-@router.get("/")
-async def get_content() -> Optional[SMainContent]:
-    """
-    Get all products
-
-    Returns:
-        list[Products]: list of products
-    """
-    content = await MainContentDAO.get_all()
-    if content and content.images:
-        content.images = content.images[0].split("/")[-1]
-
-    return content
+@router.get("", summary="Настройки сайта")
+@cached()
+async def get_content() -> SMainContent | None:
+    """Настройки сайта: шапка, подвал, контакты, тексты главной."""
+    return await MainContentDAO.get_content()

@@ -13,9 +13,9 @@
       <div class="news-content__date-image">
         <div class="main-image">
           {% if news.images %}
-            <img id="mainImage" src="{{ url_for('static', path='images/' + news.images[0]|string|replace('Изображение: ', '')) }}" alt="Фото новости" class="image">
+            <img id="mainImage" src="{{ url_for('static', path='uploads/' + news.images[0]) }}" alt="Фото новости" class="image">
           {% else %}
-            <img id="mainImage" src="{{ url_for('static', path='images/coming_soon.webp')}}" alt="Фото новости" class="image">
+            <img id="mainImage" src="{{ url_for('static', path='img/coming_soon.webp')}}" alt="Фото новости" class="image">
           {% endif %}
         </div>
 
@@ -24,8 +24,8 @@
         <div class="thumbnails-container">
           <div class="thumbnails">
             {% for image in news.images %}
-              <img class="thumbnail" src="{{ url_for('static', path='images/' + image|string|replace('Изображение: ', '')) }}" alt="Thumbnail {{ loop.index }}" 
-              onclick="changeImage('{{ url_for('static', path='images/' + image|string|replace('Изображение: ', '')) }}')">
+              <img class="thumbnail" src="{{ url_for('static', path='uploads/' + image) }}" alt="Thumbnail {{ loop.index }}"
+              onclick="changeImage('{{ url_for('static', path='uploads/' + image) }}')">
             {% endfor %}
             <script src="{{ url_for('static', path='js/change_image.js') }}"></script>
           </div>
@@ -35,7 +35,7 @@
         <!-- Дата публикации Новости -->
         <div class="news-content__date">
           {% if news.date_of_the_news %}
-            <h3 class="date">Дата публикации: {{ news.date_of_the_news }}</h3>
+            <h3 class="date">Дата публикации: {{ news.date_of_the_news|ru_date }}</h3>
           {% endif %}
         </div>
       </div>

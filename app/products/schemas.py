@@ -1,20 +1,28 @@
-from typing import Optional
-
 from pydantic import BaseModel, ConfigDict
 
 
-class SProductsDetail(BaseModel):
-    id: int
+class SCharacteristic(BaseModel):
     name: str
-    description: Optional[str]
-    price: Optional[int]
+    value: str
+
+
+class SProductsAll(BaseModel):
+    """Карточка товара в списке."""
+
+    id: int
+    name: str | None
+    short_description: str | None
+    price: int | None
+    label: bool | None
     is_active: bool
+    # Имена файлов в /static/uploads/
+    images: list[str]
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class SProductsAll(SProductsDetail):
-    label: Optional[bool]
-    short_description: Optional[str]
-    characteristics: Optional[list]
-    images: Optional[list]
+class SProductsDetail(SProductsAll):
+    """Страница товара."""
+
+    description: str | None
+    characteristics: list[SCharacteristic]
