@@ -10,7 +10,6 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from app.utils import ImageType
 
 # revision identifiers, used by Alembic.
 revision: str = '2418c7958333'
@@ -24,14 +23,14 @@ def upgrade() -> None:
     op.create_table('about_us_images',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('about_us_id', sa.Integer(), nullable=False),
-        sa.Column('image_name', ImageType(), nullable=True),
+        sa.Column('image_name', sa.Unicode(), nullable=True),
         sa.ForeignKeyConstraint(['about_us_id'], ['main_content.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_table('news_images',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('news_id', sa.Integer(), nullable=False),
-        sa.Column('news_image_name', ImageType(), nullable=True),
+        sa.Column('news_image_name', sa.Unicode(), nullable=True),
         sa.ForeignKeyConstraint(['news_id'], ['news.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id')
     )

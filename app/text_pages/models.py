@@ -1,20 +1,18 @@
-from typing import Annotated, Optional
+from sqlalchemy.orm import Mapped
 
-from sqlalchemy.orm import Mapped, mapped_column
-
-from app.database import Base
-
-intpk = Annotated[int, mapped_column(primary_key=True)]
+from app.database import Base, intpk
 
 
 class TextPages(Base):
+    """Тексты отдельных страниц сайта. Запись одна."""
+
     __tablename__ = "text_pages"
 
     id: Mapped[intpk]
-    our_contacts: Mapped[Optional[str]]
-    delivery_and_payment: Mapped[Optional[str]]
-    privacy_policy: Mapped[Optional[str]]
-    user_agreement: Mapped[Optional[str]]
+    our_contacts: Mapped[str | None]
+    delivery_and_payment: Mapped[str | None]
+    privacy_policy: Mapped[str | None]
+    user_agreement: Mapped[str | None]
 
     def __str__(self):
-        return f"Страница: {self.name}"
+        return "Текстовые страницы"
