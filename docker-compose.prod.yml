@@ -1,0 +1,30 @@
+# Продакшен: nginx с HTTPS перед приложением.
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Сертификаты Let's Encrypt ожидаются в ./certbot/conf (выпускаются certbot'ом
+# через webroot ./certbot/www), домен задаётся в nginx/conf.d/default.conf.
+services:
+  app:
+    environment:
+      MODE: PROD
+    ports: !reset []
+    expose:
+      - "8000"
+
+  worker:
+    environment:
+      MODE: PROD
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./app/static:/srv/static:ro
+      - uploads:/srv/static/uploads:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - app
+    restart: unless-stopped

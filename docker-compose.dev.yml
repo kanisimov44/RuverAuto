@@ -1,0 +1,24 @@
+# Разработка: код монтируется в контейнер, uvicorn перезапускается при изменениях.
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+# Postgres и Redis доступны с хоста — можно запускать приложение и тесты без docker.
+services:
+  db:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  redis:
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  app:
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - ./app:/ruverauto/app
+      - uploads:/ruverauto/app/static/uploads
+      - files:/ruverauto/app/files
+
+  worker:
+    volumes:
+      - ./app:/ruverauto/app
+      - uploads:/ruverauto/app/static/uploads
+      - files:/ruverauto/app/files
