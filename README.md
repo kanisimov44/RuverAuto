@@ -1,6 +1,6 @@
 # Сайт компании с каталогом и админкой
 
-[![CI](https://github.com/kanisimoff44/RuverAuto/actions/workflows/ci.yml/badge.svg)](https://github.com/kanisimoff44/RuverAuto/actions/workflows/ci.yml)
+[![CI](https://github.com/kanisimov44/fastapi-company-site/actions/workflows/ci.yml/badge.svg)](https://github.com/kanisimov44/fastapi-company-site/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688)
 
