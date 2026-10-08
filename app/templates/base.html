@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Рувер-Авто</title>
+    <title>{{ site_name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/products.css') }}">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', path='css/product_detail.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/news_detail.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/text_pages.css') }}">
-    <link rel="icon" href="{{ url_for('static', path='images/black.png') }}">
+    <link rel="icon" href="{{ url_for('static', path='img/favicon.png') }}">
     <!-- Google Fonts -->
     <link
       rel="stylesheet"
@@ -28,8 +28,8 @@
         <div class="header__info">
           <!-- Лого -->
           {% if content.logo %}
-            <a href="/pages/main" class="logo-link">
-              <img src="{{ url_for('static', path='images/' + content.logo|string) }}" alt="Рувер-Авто" class="logo-icon">
+            <a href="/" class="logo-link">
+              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="{{ site_name }}" class="logo-icon">
             </a>
           {% endif %}
 
@@ -48,17 +48,17 @@
         <div class="header__nav-menu">
           <ul class="header__nav-menu-items">
             {% if products %}
-              <li class="header__nav-link"><a href="/pages/products" class="nav-link" class:name={condition}>Товары</a></li>
+              <li class="header__nav-link"><a href="/products" class="nav-link">Товары</a></li>
             {% endif %}
             {% if all_news %}
-              <li class="header__nav-link"><a href="/pages/news" class="nav-link">Новости</a></li>
+              <li class="header__nav-link"><a href="/news" class="nav-link">Новости</a></li>
             {% endif %}
             {% if page.delivery_and_payment %}
-              <li class="header__nav-link"><a href="/pages/delivery-and-payment" class="nav-link">Доставка и оплата</a></li>
+              <li class="header__nav-link"><a href="/delivery-and-payment" class="nav-link">Доставка и оплата</a></li>
             {% endif %}
             {% if page.our_contacts %}
-              <li class="header__nav-link"><a href="/pages/our-contacts" class="nav-link">Контакты</a></li>
-            {% endif %}            
+              <li class="header__nav-link"><a href="/our-contacts" class="nav-link">Контакты</a></li>
+            {% endif %}
           </ul>
         </div>
 
@@ -68,9 +68,9 @@
             <!-- Телефон -->
             <li class="header__info-phone">
               {% if content.phone %}
-                <img src="{{ url_for('static', path='images/phone.png') }}" alt="phone-icon" class="phone-icon">
+                <img src="{{ url_for('static', path='img/phone.png') }}" alt="phone-icon" class="phone-icon">
                 <div class="info-phone">
-                  <a href="tel: {{ content.phone }}" class="phone">{{ content.phone }}</a>
+                  <a href="tel:{{ content.phone }}" class="phone">{{ content.phone }}</a>
                   <p class="phone-desc">Звонок по России бесплатный</p>
                 </div>
               {% endif %}
@@ -79,8 +79,8 @@
             <!-- Email -->
             <li class="header__info-email">
               {% if content.email %}
-                <img src="{{ url_for('static', path='images/email.png')}}" alt="email-icon" class="email-icon">
-                <a href="mailto: {{ content.email }}" class="email">{{ content.email }}</a>
+                <img src="{{ url_for('static', path='img/email.png')}}" alt="email-icon" class="email-icon">
+                <a href="mailto:{{ content.email }}" class="email">{{ content.email }}</a>
               {% endif %}
             </li>
           </ul>
@@ -88,7 +88,7 @@
       </div>
     </header>
     <main>
-      {% block main %} {% endblock main %} 
+      {% block main %} {% endblock main %}
       {% block detail %} {% endblock detail %}
       {% block privacy_policy %} {% endblock privacy_policy %}
       {% block user_agreement %} {% endblock user_agreement %}
@@ -101,8 +101,8 @@
         <div class="footer__info">
           <!-- Лого -->
           {% if content.logo %}
-            <a href="/pages/main" class="logo-link">
-              <img src="{{ url_for('static', path='images/' + content.logo|string) }}" alt="Рувер-Авто" class="logo-icon">
+            <a href="/" class="logo-link">
+              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="{{ site_name }}" class="logo-icon">
             </a>
           {% endif %}
 
@@ -121,16 +121,16 @@
         <div class="footer__nav-menu">
           <ul class="footer__nav-menu-items">
             {% if products %}
-              <li class="footer__nav-link"><a href="/pages/products" class="nav-link" class:name={condition}>Товары</a></li>
+              <li class="footer__nav-link"><a href="/products" class="nav-link">Товары</a></li>
             {% endif %}
             {% if all_news %}
-              <li class="footer__nav-link"><a href="/pages/news" class="nav-link">Новости</a></li>
+              <li class="footer__nav-link"><a href="/news" class="nav-link">Новости</a></li>
             {% endif %}
             {% if page.delivery_and_payment %}
-              <li class="footer__nav-link"><a href="/pages/delivery-and-payment" class="nav-link">Доставка и оплата</a></li>
+              <li class="footer__nav-link"><a href="/delivery-and-payment" class="nav-link">Доставка и оплата</a></li>
             {% endif %}
             {% if page.our_contacts %}
-              <li class="footer__nav-link"><a href="/pages/our-contacts" class="nav-link">Контакты</a></li>
+              <li class="footer__nav-link"><a href="/our-contacts" class="nav-link">Контакты</a></li>
             {% endif %}
           </ul>
         </div>
@@ -141,9 +141,9 @@
             <!-- Телефон -->
             <li class="footer__info-phone">
               {% if content.phone %}
-                <img src="{{ url_for('static', path='images/phone.png') }}" alt="phone-icon" class="phone-icon">
+                <img src="{{ url_for('static', path='img/phone.png') }}" alt="phone-icon" class="phone-icon">
                 <div class="info-phone">
-                  <a href="tel: {{ content.phone }}" class="phone">{{ content.phone }}</a>
+                  <a href="tel:{{ content.phone }}" class="phone">{{ content.phone }}</a>
                   <p class="phone-desc">Звонок по России бесплатный</p>
                 </div>
               {% endif %}
@@ -152,15 +152,15 @@
             <!-- Email -->
             <li class="footer__info-email">
               {% if content.email %}
-                <img src="{{ url_for('static', path='images/email.png')}}" alt="email-icon" class="email-icon">
-                <a href="mailto: {{ content.email }}" class="email">{{ content.email }}</a>
+                <img src="{{ url_for('static', path='img/email.png')}}" alt="email-icon" class="email-icon">
+                <a href="mailto:{{ content.email }}" class="email">{{ content.email }}</a>
               {% endif %}
             </li>
 
             <!-- Адрес -->
             <li class="footer__info-address">
               {% if content.address %}
-                <img src="{{ url_for('static', path='images/address.png')}}" alt="address-icon" class="address-icon">
+                <img src="{{ url_for('static', path='img/address.png')}}" alt="address-icon" class="address-icon">
               {% endif %}
               <div class="info-address">
                 {% if content.address %}
@@ -175,12 +175,12 @@
         </div>
       </div>
       <div class="footer__bottom">
-        <p class="copyright">&copy; 2025 ООО «Рувер-авто»</p>
+        <p class="copyright">&copy; {{ current_year() }} {{ site_name }}</p>
         {% if page.privacy_policy %}
-          <p><a href="/pages/privacy-policy" class="privacy-policy">Политика конфиденциальности</a></p>
+          <p><a href="/privacy-policy" class="privacy-policy">Политика конфиденциальности</a></p>
         {% endif %}
         {% if page.user_agreement %}
-          <p><a href="/pages/user-agreement" class="user-agreement">Пользовательское соглашение</a></p>
+          <p><a href="/user-agreement" class="user-agreement">Пользовательское соглашение</a></p>
         {% endif %}
       </div>
     </div>

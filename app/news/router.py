@@ -1,44 +1,28 @@
 from fastapi import APIRouter
 
+from app.cache import cached
+from app.exceptions import NewsNotFound
 from app.news.dao import NewsDAO
 from app.news.schemas import SNewsAll, SNewsDetail
-from app.utils import check_news_img
 
 router = APIRouter(
     prefix="/news",
     tags=["Новости"],
-    responses={404: {"description": "Not found"}},
 )
 
-@router.get("/")
+
+@router.get("", summary="Список новостей")
+@cached()
 async def get_all_news() -> list[SNewsAll]:
-    """
-    Get all news
-
-    Returns:
-        list[SNewsAll]: list of news
-    """
-    all_news = await NewsDAO.get_all()
-    for news in all_news:
-        check_news_img(news)
-        news.date_of_the_news = news.date_of_the_news.strftime("%d.%m.%Y")
-
-    return all_news
+    """Опубликованные новости, сначала свежие."""
+    return await NewsDAO.get_all_active()
 
 
-@router.get("/{news_id}")
-# @cache(expire=3600)
+@router.get("/{news_id}", summary="Новость", responses={404: {"description": "Новость не найдена"}})
+@cached()
 async def get_news_by_id(news_id: int) -> SNewsDetail:
-    """
-    Get news by id
-
-    Args:
-        prodnews_iduct_id (int): _description_
-
-    Returns:
-        SNewsDetail: _description_
-    """
-    news = await NewsDAO.get_by_id(news_id)
-    news.date_of_the_news = news.date_of_the_news.strftime("%d.%m.%Y")
-
+    """Опубликованная новость с фото."""
+    news = await NewsDAO.get_active_by_id(news_id)
+    if news is None:
+        raise NewsNotFound
     return news

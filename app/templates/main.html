@@ -1,4 +1,4 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
 {% block main %}
 <!-- Заголовок под шапкой -->
@@ -13,7 +13,7 @@
   <div class="content-container-title-products">
     {% if content.products_title %}
       <h2 class="products-title">{{ content.products_title }}</h2>
-      <a href="/pages/products" class="to-page-more">Смотреть все</a>
+      <a href="/products" class="to-page-more">Смотреть все</a>
     {% endif %}
   </div>
 
@@ -25,13 +25,13 @@
           <div class="content-item-image-label">
             {% if product.images %}
               {% if product.label is true %}
-                <div class="label-true">В наличии в Новосибирске</div>
+                <div class="label-true">В наличии</div>
               {% elif product.label is false %}
                 <div class="label-false">Под заказ</div>
               {% endif %}
-              <img src="{{ url_for('static', path='images/' + product.images[0]|string)}}" alt="Фото товара" class="image">
+              <img src="{{ url_for('static', path='uploads/' + product.images[0])}}" alt="Фото товара" class="image">
             {% else %}
-              <img src="{{ url_for('static', path='images/coming_soon.webp')}}" alt="Фото товара" class="image">
+              <img src="{{ url_for('static', path='img/coming_soon.webp')}}" alt="Фото товара" class="image">
             {% endif %}
           </div>
           <div class="content-item-title">
@@ -49,8 +49,8 @@
               <p class="price">{{ product.price }}₽</p>
               <script src="{{ url_for('static', path='js/convert_price.js') }}"></script>
             {% endif %}
-            <a href="/pages/products/{{ product.id }}" class="btn-more">
-              <img src="{{ url_for('static', path='images/btn.png') }}" alt="Подробнее">
+            <a href="/products/{{ product.id }}" class="btn-more">
+              <img src="{{ url_for('static', path='img/btn.png') }}" alt="Подробнее">
             </a>
           </div>
         </div>
@@ -61,8 +61,8 @@
 
 <!-- Раздел "О компании" -->
 <div class="main__about-us-container">
-  {% if content.images %}
-    <img src="{{ url_for('static', path='images/' + content.images|string)}}" alt="О компании" class="about-us-img">
+  {% if content.about_us_image %}
+    <img src="{{ url_for('static', path='uploads/' + content.about_us_image)}}" alt="О компании" class="about-us-img">
   {% endif %}
   <div class="main__about-us-text">
     {% if content.about_us_title %}
@@ -79,7 +79,7 @@
   <div class="news-container-title">
     {% if content.news_title %}
       <h2 class="news-title">{{ content.news_title }}</h2>
-      <a href="/pages/news" class="to-page-more">Смотреть все</a>
+      <a href="/news" class="to-page-more">Смотреть все</a>
     {% endif %}
   </div>
   <div class="news-container-items">
@@ -87,9 +87,9 @@
       {% if news.is_active is true %}
         <div class="news-item">
           {% if news.images %}
-            <img src="{{ url_for('static', path='images/' + news.images[0]|string)}}" alt="Фото продукта" class="image">
+            <img src="{{ url_for('static', path='uploads/' + news.images[0])}}" alt="Фото продукта" class="image">
           {% else %}
-            <img src="{{ url_for('static', path='images/coming_soon.webp')}}" alt="Фото продукта" class="image">
+            <img src="{{ url_for('static', path='img/coming_soon.webp')}}" alt="Фото продукта" class="image">
           {% endif %}
           <div class="news-item-title">
             {% if news.title %}
@@ -103,10 +103,10 @@
           </div>
           <div class="news-item-date-btn">
             {% if news.date_of_the_news %}
-              <p class="date">{{ news.date_of_the_news }}</p>
+              <p class="date">{{ news.date_of_the_news|ru_date }}</p>
             {% endif %}
-            <a href="/pages/news/{{ news.id }}" class="btn-more">
-              <img src="{{ url_for('static', path='images/btn.png') }}" alt="Подробнее">
+            <a href="/news/{{ news.id }}" class="btn-more">
+              <img src="{{ url_for('static', path='img/btn.png') }}" alt="Подробнее">
             </a>
           </div>
         </div>

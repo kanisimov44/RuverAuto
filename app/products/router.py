@@ -1,63 +1,52 @@
-from fastapi import APIRouter
-from fastapi.responses import FileResponse, RedirectResponse
+from pathlib import Path
 
+from anyio import Path as AsyncPath
+from fastapi import APIRouter
+from fastapi.responses import FileResponse
+
+from app.cache import cached
+from app.exceptions import PriceListNotFound, ProductNotFound
 from app.products.dao import PriceListDAO, ProductsDAO
 from app.products.schemas import SProductsAll, SProductsDetail
-from app.utils import check_product_img
-
-# from fastapi_cache.decorator import cache
-
 
 router = APIRouter(
     prefix="/products",
     tags=["Товары"],
-    responses={404: {"description": "Not found"}},
 )
 
 
-@router.get("/")
+@router.get("", summary="Список товаров")
+@cached()
 async def get_all_products() -> list[SProductsAll]:
-    """
-    Get all products
-
-    Returns:
-        list[Products]: list of products
-    """
-    products = await ProductsDAO.get_all()
-    for product in products:
-        check_product_img(product)
-
-    return products
+    """Опубликованные товары."""
+    return await ProductsDAO.get_all_active()
 
 
-@router.get("/{product_id}")
-# @cache(expire=3600)
-async def get_product_by_id(product_id: int) -> SProductsDetail:
-    """
-    Get product by id
+@router.get(
+    "/price-list",
+    summary="Скачать прайс-лист",
+    response_class=FileResponse,
+    responses={404: {"description": "Прайс-лист не загружен"}},
+)
+async def download_price_list():
+    """Скачать актуальный прайс-лист."""
+    price_list = await PriceListDAO.get_latest()
+    if price_list is None or not await AsyncPath(price_list.file_name.path).is_file():
+        raise PriceListNotFound
 
-    Args:
-        product_id (int): _description_
-
-    Returns:
-        SProductDetail: _description_
-    """
-    product = await ProductsDAO.get_by_id(product_id)
-    return product
-
-
-@router.get("/download/{file_id}")
-async def get_price_list():
-    price_list = await PriceListDAO.get_price_list()
-
-    file_path = price_list[-1].file_name
-    filename = price_list[-1].file_name.split("/")[-1]
-
-    if not file_path:
-        return RedirectResponse("/pages/products")
-
+    extension = Path(price_list.file_name.name).suffix
     return FileResponse(
-        path=file_path,
-        filename=f"price_list.{filename.split('.')[-1]}",
-        media_type="application/octet-stream"
+        path=price_list.file_name.path,
+        filename=f"price_list{extension}",
+        media_type="application/octet-stream",
     )
+
+
+@router.get("/{product_id}", summary="Товар", responses={404: {"description": "Товар не найден"}})
+@cached()
+async def get_product_by_id(product_id: int) -> SProductsDetail:
+    """Опубликованный товар с фото и характеристиками."""
+    product = await ProductsDAO.get_active_by_id(product_id)
+    if product is None:
+        raise ProductNotFound
+    return product

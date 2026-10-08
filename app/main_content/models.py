@@ -1,35 +1,33 @@
-from typing import Annotated, Optional
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database import Base
-from app.utils import ImageType
-
-intpk = Annotated[int, mapped_column(primary_key=True)]
+from app.database import Base, intpk
+from app.storages import ImageType, file_name
 
 
 class MainContent(Base):
+    """Настройки сайта: шапка, подвал, контакты и тексты главной. Запись одна."""
+
     __tablename__ = "main_content"
-    
+
     id: Mapped[intpk]
-    logo: Mapped[Optional[str]]
-    phone: Mapped[Optional[str]]
-    email: Mapped[Optional[str]]
-    header_title: Mapped[Optional[str]]
-    header_desc: Mapped[Optional[str]]
-    main_desc: Mapped[Optional[str]]
-    products_title: Mapped[Optional[str]]
-    about_us_title: Mapped[Optional[str]]
-    about_us_desc: Mapped[Optional[str]]
-    news_title: Mapped[Optional[str]]
-    brands_title: Mapped[Optional[str]]
-    address: Mapped[Optional[str]]
-    link_to_the_map: Mapped[Optional[str]]
+    logo: Mapped[str | None] = mapped_column(ImageType())
+    phone: Mapped[str | None]
+    email: Mapped[str | None]
+    header_title: Mapped[str | None]
+    header_desc: Mapped[str | None]
+    main_desc: Mapped[str | None]
+    products_title: Mapped[str | None]
+    about_us_title: Mapped[str | None]
+    about_us_desc: Mapped[str | None]
+    news_title: Mapped[str | None]
+    brands_title: Mapped[str | None]
+    address: Mapped[str | None]
+    link_to_the_map: Mapped[str | None]
 
     images: Mapped[list["AboutUsImages"]] = relationship(
         back_populates="about_us",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
     def __str__(self):
@@ -41,9 +39,9 @@ class AboutUsImages(Base):
 
     id: Mapped[intpk]
     about_us_id: Mapped[int] = mapped_column(ForeignKey("main_content.id", ondelete="CASCADE"))
-    image_name: Mapped[Optional[str]] = mapped_column(ImageType())
+    image_name: Mapped[str | None] = mapped_column(ImageType())
 
     about_us: Mapped["MainContent"] = relationship(back_populates="images")
 
     def __str__(self):
-        return f"Изображение: {self.image_name.split('/')[-1]}"
+        return f"Изображение: {file_name(self.image_name)}"

@@ -1,8 +1,67 @@
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-line_length = 88
+[project]
+name = "ruverauto"
+version = "1.0.0"
+description = "Сайт дилера коммерческого транспорта: FastAPI, Jinja2, SQLAdmin, PostgreSQL, Redis, Celery"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.13",
+    "anyio>=4.4",
+    "asyncpg>=0.29",
+    "bcrypt>=4.1",
+    "celery[redis]>=5.4,<6",
+    "fastapi>=0.115",
+    "fastapi-storages>=0.3",
+    "gunicorn>=23.0",
+    "itsdangerous>=2.2",
+    "jinja2>=3.1",
+    "pillow>=10.4",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "pyjwt>=2.9",
+    "python-json-logger>=2.0,<3",
+    "python-multipart>=0.0.9",
+    "redis>=5.0",
+    "sqladmin[i18n]>=0.32",
+    "sqlalchemy[asyncio]>=2.0.30,<2.1",
+    "uvicorn[standard]>=0.30",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27",
+    "pre-commit>=3.8",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["app/migrations/versions"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "SIM", # simplify
+    "ASYNC",
+]
+
+[tool.ruff.lint.flake8-bugbear]
+# Depends(...) в значениях по умолчанию - штатный приём FastAPI
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Form", "fastapi.Query"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]

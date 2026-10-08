@@ -1,208 +1,98 @@
+from datetime import date
+from typing import Annotated, Any
+
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.config import settings
 from app.main_content.router import get_content
 from app.news.router import get_all_news, get_news_by_id
 from app.products.dao import PriceListDAO
-from app.products.router import get_all_products, get_price_list, get_product_by_id
-from app.text_pages.router import get_text_page
+from app.products.router import get_all_products, get_product_by_id
+from app.text_pages.router import get_text_pages
 
 router = APIRouter(
-    prefix="/pages",
-    tags=["Фронтенд"],
-    responses={404: {"description": "Not found"}},
+    tags=["Страницы сайта"],
+    default_response_class=HTMLResponse,
+    include_in_schema=False,
 )
 
-templates = Jinja2Templates(directory="app/templates/")
+templates = Jinja2Templates(directory="app/templates")
 
 
-@router.get("/main", response_class=HTMLResponse)
-async def main_page(
-    request: Request,
-    products=Depends(get_all_products),
+def format_date(value: date | None) -> str:
+    return value.strftime("%d.%m.%Y") if value else ""
+
+
+templates.env.filters["ru_date"] = format_date
+templates.env.globals["site_name"] = settings.SITE_NAME
+templates.env.globals["current_year"] = lambda: date.today().year
+
+
+async def get_layout_context(
     content=Depends(get_content),
-    all_news=Depends(get_all_news),
-    page=Depends(get_text_page)
-):
-    """
-    Main page
-    """
-    return templates.TemplateResponse(
-        "main.html",
-        {
-            "request": request,
-            "products": products,
-            "content": content,
-            "all_news": all_news,
-            "page": page
-        },
-    )
-
-
-@router.get("/products", response_class=HTMLResponse)
-async def get_all_product(
-    request: Request,
+    page=Depends(get_text_pages),
     products=Depends(get_all_products),
     all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    price_list = await PriceListDAO.get_price_list()
-
-    return templates.TemplateResponse(
-        "products.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "content": content,
-            "price_list": price_list[-1] if price_list else None,  # get last price-list if more than one
-            "page": page
-        },
-    )
+) -> dict[str, Any]:
+    """Данные, которые нужны base.html на любой странице: шапка, меню, подвал."""
+    return {
+        "content": content,
+        "page": page,
+        "products": products,
+        "all_news": all_news,
+    }
 
 
-@router.get("/products/{product_id}", response_class=HTMLResponse)
-async def get_product_by_id(
-    request: Request,
-    products=Depends(get_all_products),
-    product=Depends(get_product_by_id),
-    all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-
-    
-    return templates.TemplateResponse(
-        "product_detail.html",
-        {
-            "request": request,
-            "products": products,
-            "product": product,
-            "all_news": all_news,
-            "content": content,
-            "page": page
-        },
-    )
+Layout = Annotated[dict[str, Any], Depends(get_layout_context)]
 
 
-@router.get("/news", response_class=HTMLResponse)
-async def get_all_news(
-    request: Request,
-    products=Depends(get_all_products),
-    all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    return templates.TemplateResponse(
-        "news.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "content": content,
-            "page": page
-        },
-    )
-
-@router.get("/news/{news_id}", response_class=HTMLResponse)
-async def get_news_by_id(
-    request: Request,
-    products=Depends(get_all_products),
-    all_news=Depends(get_all_news),
-    news=Depends(get_news_by_id),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    return templates.TemplateResponse(
-        "news_detail.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "news": news,
-            "content": content,
-            "page": page
-        },
-    )
+def render(request: Request, template: str, layout: dict[str, Any], **context: Any):
+    return templates.TemplateResponse(request, template, {**layout, **context})
 
 
-@router.get("/delivery-and-payment", response_class=HTMLResponse)
-async def delivery_and_payment(
-    request: Request,
-    products=Depends(get_all_products),
-    all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    return templates.TemplateResponse(
-        "delivery_and_payment.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "content": content,
-            "page": page
-        },
-    )
+@router.get("/")
+async def main_page(request: Request, layout: Layout):
+    return render(request, "main.html", layout)
 
 
-@router.get("/our-contacts", response_class=HTMLResponse)
-async def our_contacts(
-    request: Request,
-    products=Depends(get_all_products),
-    all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    return templates.TemplateResponse(
-        "our_contacts.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "content": content,
-            "page": page
-        },
-    )
+@router.get("/products")
+async def products_page(request: Request, layout: Layout):
+    price_list = await PriceListDAO.get_latest()
+    return render(request, "products.html", layout, price_list=price_list)
 
 
-@router.get("/privacy-policy", response_class=HTMLResponse)
-async def privacy_policy(
-    request: Request,
-    products=Depends(get_all_products),
-    all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    return templates.TemplateResponse(
-        "privacy_policy.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "content": content,
-            "page": page
-        },
-    )
+@router.get("/products/{product_id}")
+async def product_page(request: Request, layout: Layout, product=Depends(get_product_by_id)):
+    return render(request, "product_detail.html", layout, product=product)
 
 
-@router.get("/user-agreement", response_class=HTMLResponse)
-async def user_agreement(
-    request: Request,
-    products=Depends(get_all_products),
-    all_news=Depends(get_all_news),
-    content=Depends(get_content),
-    page=Depends(get_text_page)
-):
-    return templates.TemplateResponse(
-        "user_agreement.html",
-        {
-            "request": request,
-            "products": products,
-            "all_news": all_news,
-            "content": content,
-            "page": page
-        },
-    )
+@router.get("/news")
+async def news_page(request: Request, layout: Layout):
+    return render(request, "news.html", layout)
+
+
+@router.get("/news/{news_id}")
+async def news_detail_page(request: Request, layout: Layout, news=Depends(get_news_by_id)):
+    return render(request, "news_detail.html", layout, news=news)
+
+
+@router.get("/delivery-and-payment")
+async def delivery_and_payment_page(request: Request, layout: Layout):
+    return render(request, "delivery_and_payment.html", layout)
+
+
+@router.get("/our-contacts")
+async def contacts_page(request: Request, layout: Layout):
+    return render(request, "our_contacts.html", layout)
+
+
+@router.get("/privacy-policy")
+async def privacy_policy_page(request: Request, layout: Layout):
+    return render(request, "privacy_policy.html", layout)
+
+
+@router.get("/user-agreement")
+async def user_agreement_page(request: Request, layout: Layout):
+    return render(request, "user_agreement.html", layout)

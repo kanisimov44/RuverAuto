@@ -1,53 +1,75 @@
+# Полный стек для локального запуска: docker compose up --build
+# Режим разработки с автоперезагрузкой: см. docker-compose.dev.yml
+# Продакшен за nginx с HTTPS: см. docker-compose.prod.yml
+name: ruverauto
+
+x-app: &app
+  build: .
+  image: ruverauto
+  env_file: .env
+  environment:
+    POSTGRES_HOST: db
+    POSTGRES_PORT: 5432
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
+  volumes:
+    - uploads:/ruverauto/app/static/uploads
+    - files:/ruverauto/app/files
+  restart: unless-stopped
+
 services:
-  nginx:
-    build:
-      context: .
-      dockerfile: "Dockerfile.nginx"
-    container_name: ruverauto_nginx
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    depends_on:
-      - ruverauto
-    networks:
-      - prod
-
   db:
-    image: postgres:15
-    container_name: ruverauto_db
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgresdata:/var/lib/postgresql/data
-    env_file:
-      - .env-non-dev
-    ports:
-      - 2345:5432
-    networks:
-      - prod
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
-  ruverauto:
-    image: ruverauto
-    build:
-      context: .
-    container_name: ruverauto
-    volumes:
-      - static_volume:/ruverauto/app/static/images
-    env_file:
-      - .env-non-dev
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  migrations:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
     depends_on:
-      - db
-    command: ["/ruverauto/docker/app.sh"]
-    expose:
-      - "8000"
-    networks:
-      - prod
+      db:
+        condition: service_healthy
+
+  app:
+    <<: *app
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
+  worker:
+    <<: *app
+    command: ["celery", "--app", "app.tasks.celery_app", "worker", "--loglevel", "INFO"]
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
 
 volumes:
-  postgresdata:
-  static_volume:
-
-networks:
-  prod:
+  postgres_data:
+  uploads:
+  files:
