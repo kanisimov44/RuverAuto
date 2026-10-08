@@ -1,0 +1,9 @@
+{# Пункты меню показываются, только если в разделе есть контент #}
+{%- set nav_items = [] -%}
+{%- if products %}{% set _ = nav_items.append(("/products", "Товары")) %}{% endif -%}
+{%- if all_news %}{% set _ = nav_items.append(("/news", "Новости")) %}{% endif -%}
+{%- if page and page.delivery_and_payment %}{% set _ = nav_items.append(("/delivery-and-payment", "Доставка и оплата")) %}{% endif -%}
+{%- if page and page.our_contacts %}{% set _ = nav_items.append(("/our-contacts", "Контакты")) %}{% endif -%}
+{%- for href, label in nav_items %}
+<li><a class="nav__link" href="{{ href }}"{% if request.url.path == href or request.url.path.startswith(href ~ "/") %} aria-current="page"{% endif %}>{{ label }}</a></li>
+{%- endfor %}

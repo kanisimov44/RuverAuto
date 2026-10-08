@@ -1,0 +1,42 @@
+{% from "partials/icons.html" import icon %}
+{#
+  Галерея: основное фото, миниатюры и полноэкранный просмотр.
+  Без JavaScript основное фото остаётся ссылкой на файл в полном размере.
+#}
+{% macro gallery(images, alt) -%}
+{%- if images %}
+<div class="gallery" data-gallery>
+  <a class="gallery__main" href="{{ url_for('static', path='uploads/' + images[0]) }}" data-gallery-open>
+    <img src="{{ url_for('static', path='uploads/' + images[0]) }}" alt="{{ alt }}" data-gallery-main>
+    <span class="gallery__zoom">{{ icon("expand") }}<span class="visually-hidden">Открыть фото на весь экран</span></span>
+  </a>
+  {%- if images|length > 1 %}
+  <ul class="gallery__thumbs">
+    {%- for image in images %}
+    <li>
+      <button class="gallery__thumb" type="button" data-gallery-thumb="{{ loop.index0 }}" data-src="{{ url_for('static', path='uploads/' + image) }}" aria-label="Фото {{ loop.index }} из {{ images|length }}"{% if loop.first %} aria-current="true"{% endif %}>
+        <img src="{{ url_for('static', path='uploads/' + image) }}" alt="" loading="lazy">
+      </button>
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  <dialog class="lightbox" data-lightbox aria-label="Просмотр фото">
+    <img class="lightbox__image" src="" alt="{{ alt }}" data-lightbox-image>
+    <button class="icon-button lightbox__close" type="button" data-lightbox-close aria-label="Закрыть">{{ icon("close") }}</button>
+    {%- if images|length > 1 %}
+    <button class="icon-button lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="Предыдущее фото">{{ icon("chevron-left") }}</button>
+    <button class="icon-button lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="Следующее фото">{{ icon("chevron-right") }}</button>
+    <p class="lightbox__counter" data-lightbox-counter></p>
+    {%- endif %}
+  </dialog>
+</div>
+{%- else %}
+<div class="gallery">
+  <div class="gallery__main gallery__main--empty">
+    <div class="placeholder" role="img" aria-label="Фото скоро появится">{{ icon("image") }}</div>
+  </div>
+</div>
+{%- endif %}
+{%- endmacro %}

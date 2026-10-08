@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% from "partials/breadcrumbs.html" import breadcrumbs %}
+
+{% block title %}{{ content.products_title if content and content.products_title else "Товары" }} - {{ brand }}{% endblock %}
+
+{% block content %}
+<div class="container page">
+  {{ breadcrumbs([("/products", "Товары")]) }}
+  <div class="page__header">
+    <h1 class="page__title">{{ content.products_title if content and content.products_title else "Товары" }}</h1>
+    {%- if price_list %}
+    <a class="button button--secondary" href="/api/products/price-list" download>{{ icon("download") }} Скачать прайс-лист</a>
+    {%- endif %}
+  </div>
+
+  {%- if products %}
+  <div class="grid">
+    {%- for product in products %}
+    {% include "partials/product_card.html" %}
+    {%- endfor %}
+  </div>
+  {%- else %}
+  <p class="empty">Товары скоро появятся.</p>
+  {%- endif %}
+</div>
+{% endblock %}

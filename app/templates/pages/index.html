@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero__inner">
+    {%- if content and content.main_desc %}
+    <p class="hero__note">{{ content.main_desc }}</p>
+    {%- endif %}
+    <h1 class="hero__title">{{ brand }}</h1>
+    {%- if content and content.header_desc %}
+    <p class="hero__lead">{{ content.header_desc }}</p>
+    {%- endif %}
+    <div class="hero__actions">
+      {%- if products %}
+      <a class="button button--primary" href="/products">Смотреть каталог {{ icon("arrow-right") }}</a>
+      {%- endif %}
+      {%- if content and content.phone %}
+      <a class="button button--secondary" href="tel:{{ content.phone|replace(' ', '') }}">{{ icon("phone") }} {{ content.phone }}</a>
+      {%- endif %}
+    </div>
+  </div>
+</section>
+
+{%- if products %}
+<section class="section">
+  <div class="container">
+    <div class="section__header">
+      <h2 class="section__title">{{ content.products_title if content and content.products_title else "Товары" }}</h2>
+      <a class="link-arrow" href="/products">Весь каталог {{ icon("arrow-right") }}</a>
+    </div>
+    <div class="grid">
+      {%- for product in products[:6] %}
+      {% include "partials/product_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{%- endif %}
+
+{%- if content and (content.about_us_title or content.about_us_desc) %}
+<section class="section section--muted">
+  <div class="container about">
+    {%- if content.about_us_image %}
+    <img class="about__image" src="{{ url_for('static', path='uploads/' + content.about_us_image) }}" alt="" loading="lazy">
+    {%- endif %}
+    <div class="about__text">
+      <h2 class="section__title">{{ content.about_us_title or "О компании" }}</h2>
+      {%- if content.about_us_desc %}
+      <div class="prose">{{ content.about_us_desc }}</div>
+      {%- endif %}
+    </div>
+  </div>
+</section>
+{%- endif %}
+
+{%- if all_news %}
+<section class="section">
+  <div class="container">
+    <div class="section__header">
+      <h2 class="section__title">{{ content.news_title if content and content.news_title else "Новости" }}</h2>
+      <a class="link-arrow" href="/news">Все новости {{ icon("arrow-right") }}</a>
+    </div>
+    <div class="grid">
+      {%- for news in all_news[:3] %}
+      {% include "partials/news_card.html" %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{%- endif %}
+{% endblock %}

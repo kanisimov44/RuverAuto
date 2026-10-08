@@ -1,0 +1,15 @@
+{% from "partials/media.html" import card_media with context %}
+<article class="card">
+  {{ card_media(news.images[0] if news.images else None, news.title) }}
+  <div class="card__body">
+    {%- if news.date_of_the_news %}
+    <time class="card__meta" datetime="{{ news.date_of_the_news.isoformat() }}">{{ news.date_of_the_news|ru_date }}</time>
+    {%- endif %}
+    <h3 class="card__title">
+      <a class="card__link" href="/news/{{ news.id }}">{{ news.title }}</a>
+    </h3>
+    {%- if news.short_description %}
+    <p class="card__text">{{ news.short_description }}</p>
+    {%- endif %}
+  </div>
+</article>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+
+{% block title %}{{ title }} - {{ brand }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<section class="container error-page">
+  <p class="error-page__code">{{ error_code }}</p>
+  <h1 class="page__title">{{ title }}</h1>
+  <p class="error-page__text">{{ text }}</p>
+  <div class="hero__actions">
+    <a class="button button--primary" href="/">На главную</a>
+    {%- if products %}
+    <a class="button button--secondary" href="/products">Каталог {{ icon("arrow-right") }}</a>
+    {%- endif %}
+  </div>
+</section>
+{% endblock %}

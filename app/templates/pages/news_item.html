@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% from "partials/breadcrumbs.html" import breadcrumbs %}
+{% from "partials/gallery.html" import gallery with context %}
+
+{% block title %}{{ news.title }} - {{ brand }}{% endblock %}
+{% block description %}{{ (news.description or news.title)|meta }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}
+  {%- if news.images %}
+  <meta property="og:image" content="{{ url_for('static', path='uploads/' + news.images[0]) }}">
+  {%- endif %}
+{% endblock %}
+
+{% block content %}
+<article class="container page article">
+  {{ breadcrumbs([("/news", "Новости"), ("", news.title)]) }}
+  <header class="article__header">
+    {%- if news.date_of_the_news %}
+    <time class="card__meta" datetime="{{ news.date_of_the_news.isoformat() }}">{{ icon("calendar") }} {{ news.date_of_the_news|ru_date }}</time>
+    {%- endif %}
+    <h1 class="page__title">{{ news.title }}</h1>
+  </header>
+
+  {%- if news.images %}
+  {{ gallery(news.images, news.title) }}
+  {%- endif %}
+
+  {%- if news.description %}
+  <div class="prose article__body">{{ news.description }}</div>
+  {%- endif %}
+
+  <a class="link-arrow" href="/news">Все новости {{ icon("arrow-right") }}</a>
+</article>
+{% endblock %}

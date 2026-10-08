@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% from "partials/breadcrumbs.html" import breadcrumbs %}
+{% from "partials/gallery.html" import gallery with context %}
+{% from "partials/badge.html" import availability %}
+
+{% block title %}{{ product.name }} - {{ brand }}{% endblock %}
+{% block description %}{{ (product.description or product.name)|meta }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_image %}
+  {%- if product.images %}
+  <meta property="og:image" content="{{ url_for('static', path='uploads/' + product.images[0]) }}">
+  {%- endif %}
+{% endblock %}
+{% block head %}
+{#- Разметка schema.org: поисковики показывают цену и наличие в выдаче -#}
+{%- set ld_images = [] -%}
+{%- for image in product.images %}{% set _ = ld_images.append(url_for('static', path='uploads/' + image)|string) %}{% endfor -%}
+{%- set ld = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": product.name,
+  "description": product.description or product.name,
+  "image": ld_images,
+} -%}
+{%- if product.price -%}
+{%- set _ = ld.update({"offers": {
+  "@type": "Offer",
+  "price": product.price,
+  "priceCurrency": "RUB",
+  "availability": "https://schema.org/InStock" if product.label else "https://schema.org/PreOrder",
+}}) -%}
+{%- endif %}
+<script type="application/ld+json">{{ ld|tojson }}</script>
+{% endblock %}
+
+{% block content %}
+<div class="container page">
+  {{ breadcrumbs([("/products", "Товары"), ("", product.name)]) }}
+
+  <div class="detail">
+    <div class="detail__media">
+      {{ gallery(product.images, product.name) }}
+    </div>
+
+    <div class="detail__info">
+      {{ availability(product.label) }}
+      <h1 class="page__title">{{ product.name }}</h1>
+      <p class="detail__price">{{ product.price|rub if product.price else "Цена по запросу" }}</p>
+
+      {%- if content and (content.phone or content.email) %}
+      <div class="detail__actions">
+        {%- if content.phone %}
+        <a class="button button--primary" href="tel:{{ content.phone|replace(' ', '') }}">{{ icon("phone") }} Позвонить</a>
+        {%- endif %}
+        {%- if content.email %}
+        <a class="button button--secondary" href="mailto:{{ content.email }}?subject={{ ('Вопрос о товаре: ' ~ product.name)|urlencode }}">{{ icon("mail") }} Написать</a>
+        {%- endif %}
+      </div>
+      {%- endif %}
+
+      {%- if product.characteristics %}
+      <h2 class="detail__subtitle">Характеристики</h2>
+      <dl class="specs">
+        {%- for characteristic in product.characteristics %}
+        <div class="specs__row">
+          <dt>{{ characteristic.name }}</dt>
+          <dd>{{ characteristic.value }}</dd>
+        </div>
+        {%- endfor %}
+      </dl>
+      {%- endif %}
+    </div>
+  </div>
+
+  {%- if product.description %}
+  <section class="detail__description">
+    <h2 class="detail__subtitle">Описание</h2>
+    <div class="prose">{{ product.description }}</div>
+  </section>
+  {%- endif %}
+</div>
+{% endblock %}

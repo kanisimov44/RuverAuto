@@ -1,0 +1,27 @@
+{% from "partials/icons.html" import icon %}
+<header class="header" data-header>
+  <div class="container header__inner">
+    {% include "partials/logo.html" %}
+
+    <nav class="nav" id="site-nav" aria-label="Основное меню" data-nav>
+      <ul class="nav__list">
+        {% include "partials/nav.html" %}
+      </ul>
+      {%- if content and content.phone %}
+      <a class="nav__phone" href="tel:{{ content.phone|replace(' ', '') }}">{{ icon("phone") }}{{ content.phone }}</a>
+      {%- endif %}
+    </nav>
+
+    <div class="header__actions">
+      {%- if content and content.phone %}
+      <a class="header__phone" href="tel:{{ content.phone|replace(' ', '') }}">{{ icon("phone") }}<span>{{ content.phone }}</span></a>
+      {%- endif %}
+      <button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">
+        {{ icon("moon") }}{{ icon("sun") }}
+      </button>
+      <button class="icon-button header__menu-button" type="button" data-nav-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню">
+        {{ icon("menu") }}{{ icon("close") }}
+      </button>
+    </div>
+  </div>
+</header>

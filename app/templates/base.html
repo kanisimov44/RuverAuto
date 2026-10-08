@@ -1,189 +1,45 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ site_name }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/products.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/news.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/detail.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/product_detail.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/news_detail.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/text_pages.css') }}">
-    <link rel="icon" href="{{ url_for('static', path='img/favicon.png') }}">
-    <!-- Google Fonts -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Open+Sans:wght@400;600&display=swap"/>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ brand }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ (content.header_desc if content else '')|meta }}{% endblock %}">
+  <link rel="canonical" href="{{ canonical_url }}">
 
-  <body>
-  <div class=wrapper>
-    <header>
-      <div class="header">
-        <div class="header__info">
-          <!-- Лого -->
-          {% if content.logo %}
-            <a href="/" class="logo-link">
-              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="{{ site_name }}" class="logo-icon">
-            </a>
-          {% endif %}
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:site_name" content="{{ brand }}">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.description() }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {%- block og_image %}
+  {%- if content and content.logo %}
+  <meta property="og:image" content="{{ url_for('static', path='uploads/' + content.logo) }}">
+  {%- endif %}
+  {%- endblock %}
 
-          <!-- Название и описание -->
-          <div class="header__about-us">
-            {% if content.header_title %}
-              <h1 class="header__title">{{ content.header_title }}</h1>
-            {% endif %}
-            {% if content.header_desc %}
-              <p class="header__description">{{ content.header_desc }}</p>
-            {% endif %}
-          </div>
-        </div>
+  <link rel="icon" href="{{ url_for('static', path='img/favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
+  <style>:root { --accent: {{ accent_color }}; }</style>
+  <script>
+    // Тема применяется до отрисовки, чтобы страница не мигала светлым фоном
+    try {
+      const theme = localStorage.getItem("theme");
+      if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
+  <script src="{{ url_for('static', path='js/app.js') }}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+  {% include "partials/header.html" %}
 
-        <!-- Меню -->
-        <div class="header__nav-menu">
-          <ul class="header__nav-menu-items">
-            {% if products %}
-              <li class="header__nav-link"><a href="/products" class="nav-link">Товары</a></li>
-            {% endif %}
-            {% if all_news %}
-              <li class="header__nav-link"><a href="/news" class="nav-link">Новости</a></li>
-            {% endif %}
-            {% if page.delivery_and_payment %}
-              <li class="header__nav-link"><a href="/delivery-and-payment" class="nav-link">Доставка и оплата</a></li>
-            {% endif %}
-            {% if page.our_contacts %}
-              <li class="header__nav-link"><a href="/our-contacts" class="nav-link">Контакты</a></li>
-            {% endif %}
-          </ul>
-        </div>
+  <main id="main" class="main">
+    {% block content %}{% endblock %}
+  </main>
 
-        <!-- Контакты -->
-        <div class="header__info-contacts">
-          <ul class="header__info-contacts-items">
-            <!-- Телефон -->
-            <li class="header__info-phone">
-              {% if content.phone %}
-                <img src="{{ url_for('static', path='img/phone.png') }}" alt="phone-icon" class="phone-icon">
-                <div class="info-phone">
-                  <a href="tel:{{ content.phone }}" class="phone">{{ content.phone }}</a>
-                  <p class="phone-desc">Звонок по России бесплатный</p>
-                </div>
-              {% endif %}
-            </li>
-
-            <!-- Email -->
-            <li class="header__info-email">
-              {% if content.email %}
-                <img src="{{ url_for('static', path='img/email.png')}}" alt="email-icon" class="email-icon">
-                <a href="mailto:{{ content.email }}" class="email">{{ content.email }}</a>
-              {% endif %}
-            </li>
-          </ul>
-        </div>
-      </div>
-    </header>
-    <main>
-      {% block main %} {% endblock main %}
-      {% block detail %} {% endblock detail %}
-      {% block privacy_policy %} {% endblock privacy_policy %}
-      {% block user_agreement %} {% endblock user_agreement %}
-      {% block delivery_and_payment %} {% endblock delivery_and_payment %}
-      {% block our_contacts %} {% endblock our_contacts %}
-    </main>
-
-    <div class="footer">
-      <div class="footer__top">
-        <div class="footer__info">
-          <!-- Лого -->
-          {% if content.logo %}
-            <a href="/" class="logo-link">
-              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="{{ site_name }}" class="logo-icon">
-            </a>
-          {% endif %}
-
-          <!-- Название и описание -->
-          <div class="footer__about-us">
-            {% if content.header_title %}
-              <h1 class="footer__title">{{ content.header_title }}</h1>
-            {% endif %}
-            {% if content.header_desc %}
-              <p class="footer__description">{{ content.header_desc }}</p>
-            {% endif %}
-          </div>
-        </div>
-
-        <!-- Меню -->
-        <div class="footer__nav-menu">
-          <ul class="footer__nav-menu-items">
-            {% if products %}
-              <li class="footer__nav-link"><a href="/products" class="nav-link">Товары</a></li>
-            {% endif %}
-            {% if all_news %}
-              <li class="footer__nav-link"><a href="/news" class="nav-link">Новости</a></li>
-            {% endif %}
-            {% if page.delivery_and_payment %}
-              <li class="footer__nav-link"><a href="/delivery-and-payment" class="nav-link">Доставка и оплата</a></li>
-            {% endif %}
-            {% if page.our_contacts %}
-              <li class="footer__nav-link"><a href="/our-contacts" class="nav-link">Контакты</a></li>
-            {% endif %}
-          </ul>
-        </div>
-
-        <!-- Контакты -->
-        <div class="footer__info-contacts">
-          <ul class="footer__info-contacts-items">
-            <!-- Телефон -->
-            <li class="footer__info-phone">
-              {% if content.phone %}
-                <img src="{{ url_for('static', path='img/phone.png') }}" alt="phone-icon" class="phone-icon">
-                <div class="info-phone">
-                  <a href="tel:{{ content.phone }}" class="phone">{{ content.phone }}</a>
-                  <p class="phone-desc">Звонок по России бесплатный</p>
-                </div>
-              {% endif %}
-            </li>
-
-            <!-- Email -->
-            <li class="footer__info-email">
-              {% if content.email %}
-                <img src="{{ url_for('static', path='img/email.png')}}" alt="email-icon" class="email-icon">
-                <a href="mailto:{{ content.email }}" class="email">{{ content.email }}</a>
-              {% endif %}
-            </li>
-
-            <!-- Адрес -->
-            <li class="footer__info-address">
-              {% if content.address %}
-                <img src="{{ url_for('static', path='img/address.png')}}" alt="address-icon" class="address-icon">
-              {% endif %}
-              <div class="info-address">
-                {% if content.address %}
-                  <h1 class="address">{{ content.address }}</h1>
-                {% endif %}
-                {% if content.link_to_the_map %}
-                  <a href="{{ content.link_to_the_map }}" target="_blank" class="address-map">Смотреть на карте</a>
-                {% endif %}
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer__bottom">
-        <p class="copyright">&copy; {{ current_year() }} {{ site_name }}</p>
-        {% if page.privacy_policy %}
-          <p><a href="/privacy-policy" class="privacy-policy">Политика конфиденциальности</a></p>
-        {% endif %}
-        {% if page.user_agreement %}
-          <p><a href="/user-agreement" class="user-agreement">Пользовательское соглашение</a></p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  </body>
+  {% include "partials/footer.html" %}
+</body>
 </html>

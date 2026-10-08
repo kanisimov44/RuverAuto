@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "partials/breadcrumbs.html" import breadcrumbs %}
+
+{% block title %}{{ title }} - {{ brand }}{% endblock %}
+{% block description %}{{ (text or title)|meta }}{% endblock %}
+
+{% block content %}
+<article class="container page article">
+  {{ breadcrumbs([("", title)]) }}
+  <h1 class="page__title">{{ title }}</h1>
+  {%- if text %}
+  <div class="prose article__body">{{ text }}</div>
+  {%- else %}
+  <p class="empty">Раздел скоро будет заполнен.</p>
+  {%- endif %}
+</article>
+{% endblock %}

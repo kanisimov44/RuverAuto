@@ -1,0 +1,15 @@
+{% from "partials/media.html" import card_media with context %}
+{% from "partials/badge.html" import availability %}
+<article class="card">
+  {{ card_media(product.images[0] if product.images else None, product.name) }}
+  <div class="card__body">
+    {{ availability(product.label) }}
+    <h3 class="card__title">
+      <a class="card__link" href="/products/{{ product.id }}">{{ product.name }}</a>
+    </h3>
+    {%- if product.short_description %}
+    <p class="card__text">{{ product.short_description }}</p>
+    {%- endif %}
+    <p class="card__price">{{ product.price|rub if product.price else "Цена по запросу" }}</p>
+  </div>
+</article>

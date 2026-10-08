@@ -1,0 +1,11 @@
+{# items: список пар (адрес, название); последний пункт — текущая страница #}
+{% macro breadcrumbs(items) -%}
+<nav class="breadcrumbs" aria-label="Навигационная цепочка">
+  <ol>
+    <li><a href="/">Главная</a></li>
+    {%- for href, label in items %}
+    <li>{% if loop.last %}<span aria-current="page">{{ label }}</span>{% else %}<a href="{{ href }}">{{ label }}</a>{% endif %}</li>
+    {%- endfor %}
+  </ol>
+</nav>
+{%- endmacro %}

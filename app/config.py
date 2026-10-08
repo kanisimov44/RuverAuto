@@ -1,5 +1,6 @@
-from typing import Literal
+from typing import Annotated, Literal
 
+from pydantic import StringConstraints
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +20,8 @@ class Settings(BaseSettings):
     SITE_NAME: str = "Моя компания"
     # Домен сайта: на него настраивается nginx в продакшен-режиме
     DOMAIN: str = "localhost"
+    # Фирменный цвет: кнопки, ссылки, акценты. Только формат #rrggbb
+    ACCENT_COLOR: Annotated[str, StringConstraints(pattern=r"^#[0-9a-fA-F]{6}$")] = "#2563eb"
 
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432

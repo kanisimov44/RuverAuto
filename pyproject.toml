@@ -1,5 +1,5 @@
 [project]
-name = "ruverauto"
+name = "fastapi-company-site"
 version = "1.0.0"
 description = "Сайт дилера коммерческого транспорта: FastAPI, Jinja2, SQLAdmin, PostgreSQL, Redis, Celery"
 readme = "README.md"
