@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "partials/breadcrumbs.html" import breadcrumbs %}
+
+{% block title %}{{ content.news_title if content and content.news_title else "Новости" }} - {{ brand }}{% endblock %}
+
+{% block content %}
+<div class="container page">
+  {{ breadcrumbs([("/news", "Новости")]) }}
+  <div class="page__header">
+    <h1 class="page__title">{{ content.news_title if content and content.news_title else "Новости" }}</h1>
+  </div>
+
+  {%- if all_news %}
+  <div class="grid">
+    {%- for news in all_news %}
+    {% include "partials/news_card.html" %}
+    {%- endfor %}
+  </div>
+  {%- else %}
+  <p class="empty">Новостей пока нет.</p>
+  {%- endif %}
+</div>
+{% endblock %}

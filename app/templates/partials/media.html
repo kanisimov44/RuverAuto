@@ -1,0 +1,11 @@
+{% from "partials/icons.html" import icon %}
+{# Картинка карточки или заглушка, если фото не загружено #}
+{% macro card_media(image, alt) -%}
+<div class="card__media">
+  {%- if image %}
+  <img src="{{ url_for('static', path='uploads/' + image) }}" alt="{{ alt }}" loading="lazy" decoding="async">
+  {%- else %}
+  <div class="placeholder" role="img" aria-label="Фото скоро появится">{{ icon("image") }}</div>
+  {%- endif %}
+</div>
+{%- endmacro %}

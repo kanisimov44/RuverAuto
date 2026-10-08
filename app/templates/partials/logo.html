@@ -1,0 +1,13 @@
+<a class="logo" href="/" aria-label="{{ brand }}: на главную">
+  {%- if content and content.logo %}
+  <img class="logo__image" src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="" width="40" height="40">
+  {%- else %}
+  <span class="logo__mark" aria-hidden="true">{{ brand[:1] }}</span>
+  {%- endif %}
+  <span class="logo__text">
+    <span class="logo__name">{{ brand }}</span>
+    {%- if content and content.header_desc %}
+    <span class="logo__tagline">{{ content.header_desc }}</span>
+    {%- endif %}
+  </span>
+</a>

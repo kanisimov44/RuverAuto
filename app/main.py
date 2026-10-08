@@ -2,9 +2,11 @@ import time
 from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
 from sqladmin import Admin
 from sqladmin.i18n import I18nConfig
+from starlette.exceptions import HTTPException
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.admin.auth import authentication_backend
@@ -26,6 +28,11 @@ from app.database import engine
 from app.logger import logger
 from app.main_content.router import router as content_router
 from app.news.router import router as news_router
+from app.pages.errors import (
+    html_http_exception_handler,
+    html_server_error_handler,
+    html_validation_exception_handler,
+)
 from app.pages.router import router as pages_router
 from app.products.router import router as products_router
 from app.storages import UPLOADS_DIR
@@ -45,6 +52,10 @@ app = FastAPI(
     description="Сайт компании: страницы, JSON API и админка.",
     lifespan=lifespan,
 )
+
+app.add_exception_handler(HTTPException, html_http_exception_handler)
+app.add_exception_handler(RequestValidationError, html_validation_exception_handler)
+app.add_exception_handler(Exception, html_server_error_handler)
 
 # За nginx: корректные схема и адрес клиента из X-Forwarded-* заголовков
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")

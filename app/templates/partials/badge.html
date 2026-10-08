@@ -1,0 +1,5 @@
+{% macro availability(label) -%}
+{%- if label is true -%}<span class="badge badge--success">В наличии</span>
+{%- elif label is false -%}<span class="badge badge--muted">Под заказ</span>
+{%- endif -%}
+{%- endmacro %}

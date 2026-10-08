@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{{ base_url }}/</loc></url>
+  {%- if products %}
+  <url><loc>{{ base_url }}/products</loc></url>
+  {%- for product in products %}
+  <url><loc>{{ base_url }}/products/{{ product.id }}</loc></url>
+  {%- endfor %}
+  {%- endif %}
+  {%- if all_news %}
+  <url><loc>{{ base_url }}/news</loc></url>
+  {%- for news in all_news %}
+  <url>
+    <loc>{{ base_url }}/news/{{ news.id }}</loc>
+    {%- if news.date_of_the_news %}
+    <lastmod>{{ news.date_of_the_news.isoformat() }}</lastmod>
+    {%- endif %}
+  </url>
+  {%- endfor %}
+  {%- endif %}
+  {%- for path in text_pages %}
+  <url><loc>{{ base_url }}{{ path }}</loc></url>
+  {%- endfor %}
+</urlset>
