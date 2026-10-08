@@ -1,6 +1,6 @@
 # Разработка: код монтируется в контейнер, uvicorn перезапускается при изменениях.
 #   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-# Postgres и Redis доступны с хоста — можно запускать приложение и тесты без docker.
+# Postgres и Redis доступны с хоста - можно запускать приложение и тесты без docker.
 services:
   db:
     ports:

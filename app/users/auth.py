@@ -31,7 +31,7 @@ async def authenticate_user(username: str, password: str):
 
 
 async def get_user_by_token(token: str):
-    """Возвращает пользователя по JWT. Если токен невалиден или истёк — None."""
+    """Возвращает пользователя по JWT. Если токен невалиден или истёк - None."""
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     except jwt.InvalidTokenError:

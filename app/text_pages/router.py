@@ -13,5 +13,5 @@ router = APIRouter(
 @router.get("", summary="Текстовые страницы")
 @cached()
 async def get_text_pages() -> STextPages | None:
-    """Тексты страниц «Контакты», «Доставка и оплата» и юридических документов."""
+    """Тексты страниц "Контакты", "Доставка и оплата" и юридических документов."""
     return await TextPagesDAO.get_pages()

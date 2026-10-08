@@ -184,8 +184,8 @@ class MainContentAdmin(BaseAdmin, model=MainContent):
 
 class AboutUsAdmin(BaseAdmin, model=AboutUsImages):
     column_list = [c.name for c in AboutUsImages.__table__.c] + [AboutUsImages.about_us]
-    name = "изображение «О нас»"
-    name_plural = "Изображения «О нас»"
+    name = "изображение 'О нас'"
+    name_plural = "Изображения 'О нас'"
     icon = "fa-solid fa-image"
     column_formatters = {"image_name": thumbnail("image_name")}
     column_formatters_detail = column_formatters

@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /ruverauto
 
 # Зависимости ставятся отдельным слоем, чтобы правки кода не пересобирали его.
-# INSTALL_DEV=1 добавляет dev-зависимости (тесты, линтер) — для CI.
+# INSTALL_DEV=1 добавляет dev-зависимости (тесты, линтер) - для CI.
 ARG INSTALL_DEV=0
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \

@@ -14,7 +14,7 @@ class Products(Base):
     name: Mapped[str | None]
     description: Mapped[str | None]
     price: Mapped[int | None]
-    # True — «В наличии», False — «Под заказ», None — без лейбла
+    # True - "В наличии", False - "Под заказ", None - без лейбла
     label: Mapped[bool | None]
     is_active: Mapped[bool]
 

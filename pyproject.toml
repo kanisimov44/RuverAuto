@@ -57,7 +57,7 @@ select = [
 ]
 
 [tool.ruff.lint.flake8-bugbear]
-# Depends(...) в значениях по умолчанию — штатный приём FastAPI
+# Depends(...) в значениях по умолчанию - штатный приём FastAPI
 extend-immutable-calls = ["fastapi.Depends", "fastapi.Form", "fastapi.Query"]
 
 [tool.pytest.ini_options]
