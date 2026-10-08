@@ -3,7 +3,7 @@ import os
 # Настройки читаются при импорте app, поэтому окружение задаётся до него.
 # Тесты всегда работают с отдельной базой и никогда с рабочей.
 os.environ["MODE"] = "TEST"
-os.environ["POSTGRES_DB"] = os.environ.get("TEST_POSTGRES_DB", "ruverauto_test")
+os.environ["POSTGRES_DB"] = os.environ.get("TEST_POSTGRES_DB", "app_test")
 
 from datetime import date  # noqa: E402
 
@@ -51,7 +51,7 @@ async def _fill_database() -> None:
             logo="logo.png",
             phone="8 800 000-00-00",
             email="test@example.com",
-            header_title="Рувер-Авто",
+            header_title="Тестовая компания",
             about_us_title="О компании",
         )
         content.images.append(AboutUsImages(image_name="about.webp"))

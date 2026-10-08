@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from app.config import settings
 from app.main_content.router import get_content
 from app.news.router import get_all_news, get_news_by_id
 from app.products.dao import PriceListDAO
@@ -25,6 +26,8 @@ def format_date(value: date | None) -> str:
 
 
 templates.env.filters["ru_date"] = format_date
+templates.env.globals["site_name"] = settings.SITE_NAME
+templates.env.globals["current_year"] = lambda: date.today().year
 
 
 async def get_layout_context(

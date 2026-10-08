@@ -21,6 +21,7 @@ from app.admin.views import (
     UsersAdmin,
 )
 from app.cache import redis_client
+from app.config import settings
 from app.database import engine
 from app.logger import logger
 from app.main_content.router import router as content_router
@@ -39,9 +40,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Рувер-Авто",
+    title=settings.SITE_NAME,
     version="1.0.0",
-    description="Сайт дилера коммерческого транспорта: страницы, JSON API и админка.",
+    description="Сайт компании: страницы, JSON API и админка.",
     lifespan=lifespan,
 )
 
@@ -64,7 +65,7 @@ admin = Admin(
     app,
     engine,
     authentication_backend=authentication_backend,
-    title="Рувер-Авто",
+    title=settings.SITE_NAME,
     favicon_url="/static/img/favicon.png",
     i18n_config=I18nConfig(default_locale="ru"),
 )

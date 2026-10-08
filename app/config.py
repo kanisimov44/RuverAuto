@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     MODE: Literal["DEV", "TEST", "PROD"] = "DEV"
     LOG_LEVEL: str = "INFO"
 
+    # Название компании: заголовок вкладки, копирайт, админка, документация API
+    SITE_NAME: str = "Моя компания"
+    # Домен сайта: на него настраивается nginx в продакшен-режиме
+    DOMAIN: str = "localhost"
+
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str

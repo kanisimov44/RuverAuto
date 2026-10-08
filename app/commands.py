@@ -14,6 +14,7 @@ from PIL import Image, ImageDraw
 from sqlalchemy import func, select
 from starlette.datastructures import UploadFile
 
+from app.config import settings
 from app.database import async_session_maker, engine
 from app.main_content.models import AboutUsImages, MainContent
 from app.news.models import News, NewsImages
@@ -162,7 +163,7 @@ async def seed() -> None:
             logo=_demo_logo(),
             phone="8 800 000-00-00",
             email="info@example.com",
-            header_title="Рувер-Авто",
+            header_title=settings.SITE_NAME,
             header_desc="Коммерческий транспорт и прицепная техника",
             main_desc="Демо-версия сайта: все товары и новости вымышленные",
             products_title="Техника в наличии и под заказ",
@@ -170,7 +171,7 @@ async def seed() -> None:
             about_us_desc=LOREM,
             news_title="Новости",
             brands_title="Бренды",
-            address="г. Новосибирск, ул. Демонстрационная, 1",
+            address="г. Город, ул. Демонстрационная, 1",
             link_to_the_map="https://yandex.ru/maps/",
         )
         content.images.append(AboutUsImages(image_name=_demo_image("about_us.webp", "#2d4059")))

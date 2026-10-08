@@ -1,11 +1,13 @@
-upstream ruverauto_app {
+# Шаблон: при старте контейнера nginx подставляет сюда переменную DOMAIN из окружения
+
+upstream app_upstream {
     server app:8000;
 }
 
 # HTTP: проверка домена для certbot и редирект на HTTPS
 server {
     listen 80;
-    server_name ruverauto.ru www.ruverauto.ru;
+    server_name ${DOMAIN} www.${DOMAIN};
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -19,10 +21,10 @@ server {
 server {
     listen 443 ssl;
     http2 on;
-    server_name ruverauto.ru www.ruverauto.ru;
+    server_name ${DOMAIN} www.${DOMAIN};
 
-    ssl_certificate /etc/letsencrypt/live/ruverauto.ru/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ruverauto.ru/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
 
     # Фото и прайс-листы загружаются через админку
@@ -36,7 +38,7 @@ server {
     }
 
     location / {
-        proxy_pass http://ruverauto_app;
+        proxy_pass http://app_upstream;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

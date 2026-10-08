@@ -1,5 +1,7 @@
 import pytest
 
+from app.config import settings
+
 
 @pytest.mark.parametrize(
     "url",
@@ -18,8 +20,9 @@ async def test_page_renders(client, url):
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/html")
-    # Шапка из настроек сайта есть на любой странице
-    assert "Рувер-Авто" in response.text
+    # Шапка из настроек сайта и название компании есть на любой странице
+    assert "Тестовая компания" in response.text
+    assert f"<title>{settings.SITE_NAME}</title>" in response.text
 
 
 async def test_main_page_shows_active_products_only(client):

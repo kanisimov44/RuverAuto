@@ -1,25 +1,32 @@
-# Рувер-Авто
+# Сайт компании с каталогом и админкой
 
 [![CI](https://github.com/kanisimoff44/RuverAuto/actions/workflows/ci.yml/badge.svg)](https://github.com/kanisimoff44/RuverAuto/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688)
 
-Сайт дилера коммерческого транспорта: каталог техники, новости, контакты и админка,
-в которой менеджер без программиста правит весь контент - от товаров до телефона в шапке.
+Готовая основа для сайта небольшой компании: каталог товаров, новости, контакты,
+юридические страницы и админка, в которой менеджер без программиста правит весь
+контент, от карточек товаров до телефона в шапке.
+
+Проект не привязан к отрасли: характеристики товаров задаются в админке свободными
+парами "название - значение", поэтому каталог подходит и для техники, и для оборудования,
+и для любых других товаров. Название компании и домен задаются переменными окружения.
 
 ![Главная страница](docs/screenshots/main.png)
 
-> На скриншотах - демо-данные из команды `seed`, товары и новости вымышленные.
+> На скриншотах демо-данные из команды `seed`: компания, товары и новости вымышленные.
 
 ## Возможности
 
-- **Каталог** с карточками товаров, галереей фото, характеристиками и лейблами наличия.
-- **Новости**, страницы "Контакты", "Доставка и оплата", юридические документы.
+- **Каталог** с карточками товаров, галереей фото, характеристиками и метками
+  "В наличии" / "Под заказ".
+- **Новости**, страницы "Контакты", "Доставка и оплата", политика конфиденциальности
+  и пользовательское соглашение.
 - **Прайс-лист**: загружается в админке, скачивается с сайта.
 - **Админка** на русском: товары, фото, новости, тексты, настройки сайта, пользователи.
   Вход только для ролей `root` и `admin`.
 - **JSON API** с документацией Swagger на `/docs`.
-- **Кеширование** публичного контента в Redis с инвалидацией при любой правке в админке.
+- **Кеширование** публичного контента в Redis со сбросом при любой правке в админке.
 - **Фоновая оптимизация фото**: Celery уменьшает и пережимает загруженные изображения.
 
 ## Стек
@@ -33,6 +40,36 @@
 | Фоновые задачи | Celery |
 | Инфраструктура | Docker, Docker Compose, Nginx, Gunicorn + Uvicorn |
 | Качество | pytest, Ruff, pre-commit, GitHub Actions, uv |
+
+## Быстрый старт
+
+Нужны только Docker и Docker Compose.
+
+```bash
+cp .env.example .env              # укажите название компании, пароль БД и SECRET_KEY
+docker compose up --build -d      # postgres, redis, миграции, приложение, celery
+
+docker compose exec app python -m app.commands seed                # демо-данные
+docker compose exec app python -m app.commands create-admin admin  # спросит пароль
+```
+
+- Сайт: http://localhost:8000
+- Админка: http://localhost:8000/admin
+- API: http://localhost:8000/docs
+
+## Как адаптировать под свою компанию
+
+1. **Название и домен** задаются в `.env`:
+   - `SITE_NAME` выводится в заголовке вкладки, копирайте, админке и документации API;
+   - `DOMAIN` используется nginx в продакшен-режиме.
+2. **Контент** заполняется в админке, править код не нужно. Раздел "Настройка сайта"
+   отвечает за логотип, телефон, почту, адрес и тексты главной, "Текстовые страницы" -
+   за контакты, доставку и юридические документы.
+3. **Внешний вид** меняется в шаблонах [app/templates](app/templates) и стилях
+   [app/static/css](app/static/css). Иконки интерфейса лежат в [app/static/img](app/static/img).
+4. **Новый раздел** (например, "Услуги" или "Вакансии") добавляется по образцу
+   существующих: пакет в `app/` с файлами `models.py`, `schemas.py`, `dao.py`, `router.py`,
+   миграция Alembic, раздел в админке и шаблон страницы.
 
 ## Архитектура
 
@@ -50,7 +87,7 @@ flowchart LR
 
 В одном приложении три интерфейса:
 
-- **Страницы** (`/`, `/products`, `/news`, …) - HTML на Jinja2.
+- **Страницы** (`/`, `/products`, `/news`, ...) - HTML на Jinja2.
 - **JSON API** (`/api/...`) - те же данные в JSON.
 - **Админка** (`/admin`) - SQLAdmin.
 
@@ -75,22 +112,6 @@ app/
 └── commands.py       # create-admin, seed
 ```
 
-## Быстрый старт
-
-Нужны только Docker и Docker Compose.
-
-```bash
-cp .env.example .env              # поменяйте пароль БД и SECRET_KEY
-docker compose up --build -d      # postgres, redis, миграции, приложение, celery
-
-docker compose exec app python -m app.commands seed                # демо-данные
-docker compose exec app python -m app.commands create-admin admin  # спросит пароль
-```
-
-- Сайт: http://localhost:8000
-- Админка: http://localhost:8000/admin
-- API: http://localhost:8000/docs
-
 ## Разработка
 
 Режим с автоперезагрузкой: код монтируется в контейнер, а Postgres и Redis доступны с хоста
@@ -106,7 +127,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 uv sync                      # окружение со всеми зависимостями
 uv run pre-commit install    # ruff и проверки перед каждым коммитом
 
-uv run pytest                # тесты (нужны Postgres из dev-режима)
+uv run pytest                # тесты (нужен Postgres из dev-режима)
 uv run ruff check .          # линтер
 uv run ruff format .         # форматирование
 
@@ -114,7 +135,7 @@ uv run alembic revision --autogenerate -m "описание"   # новая ми
 uv run alembic upgrade head
 ```
 
-Тесты создают отдельную базу `ruverauto_test` и разворачивают в ней схему настоящими
+Тесты создают отдельную базу `app_test` и разворачивают в ней схему настоящими
 миграциями Alembic, поэтому рабочие данные они не трогают.
 
 ## Продакшен
@@ -124,8 +145,9 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
 Перед приложением встаёт Nginx: он терминирует HTTPS, отдаёт статику и загруженные фото,
-остальное проксирует в Gunicorn. Сертификаты Let's Encrypt ожидаются в `./certbot/conf`,
-домен задаётся в [nginx/conf.d/default.conf](nginx/conf.d/default.conf).
+остальное проксирует в Gunicorn. Конфиг собирается из шаблона
+[nginx/templates/default.conf.template](nginx/templates/default.conf.template) с доменом
+из `DOMAIN`, сертификаты Let's Encrypt ожидаются в `./certbot/conf/live/<DOMAIN>/`.
 
 ## Технические решения
 

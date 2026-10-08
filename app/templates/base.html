@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Рувер-Авто</title>
+    <title>{{ site_name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/products.css') }}">
@@ -29,7 +29,7 @@
           <!-- Лого -->
           {% if content.logo %}
             <a href="/" class="logo-link">
-              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="Рувер-Авто" class="logo-icon">
+              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="{{ site_name }}" class="logo-icon">
             </a>
           {% endif %}
 
@@ -102,7 +102,7 @@
           <!-- Лого -->
           {% if content.logo %}
             <a href="/" class="logo-link">
-              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="Рувер-Авто" class="logo-icon">
+              <img src="{{ url_for('static', path='uploads/' + content.logo) }}" alt="{{ site_name }}" class="logo-icon">
             </a>
           {% endif %}
 
@@ -175,7 +175,7 @@
         </div>
       </div>
       <div class="footer__bottom">
-        <p class="copyright">&copy; 2025 ООО «Рувер-авто»</p>
+        <p class="copyright">&copy; {{ current_year() }} {{ site_name }}</p>
         {% if page.privacy_policy %}
           <p><a href="/privacy-policy" class="privacy-policy">Политика конфиденциальности</a></p>
         {% endif %}
